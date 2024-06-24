@@ -1,0 +1,29 @@
+name: AutoJD
+
+on:
+  schedule:
+    - cron: '20 2,12 * * *'  # 每天 UTC 时间 3:00 运行?
+  workflow_dispatch:
+
+jobs:
+  run-script:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2
+
+    - name: Set up Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: '3.x'  # 指定Python3.x
+
+    - name: Install dependencies
+      run: |
+        pip install uvicorn fastapi websockets httpx loguru diskcache apscheduler SQLAlchemy python-dateutil -i https://pypi.tuna.tsinghua.edu.cn/simple
+ 
+    - name: Run script
+      env:
+        JDCOOKIE: ${{ secrets.JDCOOKIE }}
+        SCKEY: ${{ secrets.SCKEY }}
+      run: python main.py
